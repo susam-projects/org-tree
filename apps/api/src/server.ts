@@ -11,6 +11,9 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invali
 const responseDelayMs = Number(process.env.RESPONSE_DELAY_MS ?? 800);
 if (!Number.isInteger(responseDelayMs) || responseDelayMs < 0 || responseDelayMs > 30000)
   throw new Error('Invalid RESPONSE_DELAY_MS.');
+const liveUpdateIntervalMs = Number(process.env.LIVE_UPDATE_INTERVAL_MS ?? 4000);
+if (!Number.isInteger(liveUpdateIntervalMs) || liveUpdateIntervalMs < 500 || liveUpdateIntervalMs > 60000)
+  throw new Error('Invalid LIVE_UPDATE_INTERVAL_MS.');
 
 const app = await buildApp({
   logger: true,
@@ -18,6 +21,7 @@ const app = await buildApp({
     .map((origin) => origin.trim())
     .filter(Boolean),
   responseDelayMs,
+  liveUpdateIntervalMs,
 });
 
 for (const signal of ['SIGINT', 'SIGTERM'])
