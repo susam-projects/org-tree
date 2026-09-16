@@ -4,7 +4,7 @@ import { useWebSocketStream } from '@/cache';
 import type { ConnectionStatus } from '@/cache';
 import { orgTreeQueryKey } from '@/orgDashboard/api/useOrgTreeData';
 import { orgPatchMessageSchema } from '@/orgDashboard/types/types';
-import type { OrgNode, OrgPatchMessage } from '@/orgDashboard/types/types';
+import type { OrgPatchMessage } from '@/orgDashboard/types/types';
 
 function buildLiveUpdatesUrl(): string {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -35,12 +35,6 @@ export function useLiveOrgUpdates(onPatch: (patch: OrgPatchMessage) => void): Co
         return;
       }
 
-      queryClient.setQueryData<OrgNode[]>(orgTreeQueryKey, (nodes) =>
-        nodes?.map((node) => {
-          const nodePatch = patch.nodes.find((entry) => entry.id === node.id);
-          return nodePatch ? { ...node, ...nodePatch } : node;
-        }),
-      );
       onPatch(patch);
     },
   });

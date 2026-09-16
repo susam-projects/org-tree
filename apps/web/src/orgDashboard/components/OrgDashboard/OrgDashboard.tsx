@@ -1,15 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import * as S from '@/orgDashboard/components/OrgDashboard/OrgDashboard.style';
 import { OrgTable } from '@/orgTable';
 import { OrgTree } from '@/orgTree';
 import { useLiveOrgUpdates } from '@/orgDashboard/api/useLiveOrgUpdates';
 import { useOrgTreeData } from '@/orgDashboard/api/useOrgTreeData';
-import { aggregateOrgTree, updateAggregatesForPatch } from '@/orgDashboard/utils/aggregate';
-import { buildOrgTree } from '@/orgDashboard/utils/buildTree';
-import { indexOrgTree } from '@/orgDashboard/utils/indexOrgTree';
+import { buildDashboardData, dashboardReducer } from '@/orgDashboard/utils/dashboardData';
 import { toTableRows } from '@/orgDashboard/utils/toTableRows';
 import { toTreeViewNodes } from '@/orgDashboard/utils/toTreeViewNodes';
-import type { OrgAggregate } from '@/orgDashboard/types/types';
 
 type ViewMode = 'tree' | 'table';
 
@@ -18,24 +15,13 @@ export function OrgDashboard() {
   const [view, setView] = useState<ViewMode>('tree');
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const tree = useMemo(() => (state.status === 'success' ? buildOrgTree(state.data) : []), [state]);
-  const nodesById = useMemo(() => indexOrgTree(tree), [tree]);
-
-  const [aggregates, setAggregates] = useState<Map<string, OrgAggregate>>(() => new Map());
-  const skipNextFullRecomputeRef = useRef(false);
+  const [{ tree, aggregates }, dispatch] = useReducer(dashboardReducer, [], buildDashboardData);
 
   useEffect(() => {
-    if (skipNextFullRecomputeRef.current) {
-      skipNextFullRecomputeRef.current = false;
-      return;
-    }
-    setAggregates(aggregateOrgTree(tree));
-  }, [tree]);
+    if (state.status === 'success') dispatch({ type: 'loaded', nodes: state.data });
+  }, [state]);
 
-  useLiveOrgUpdates((patch) => {
-    skipNextFullRecomputeRef.current = true;
-    setAggregates((previous) => updateAggregatesForPatch(nodesById, previous, patch.nodes));
-  });
+  useLiveOrgUpdates((patch) => dispatch({ type: 'patch', nodes: patch.nodes }));
 
   const treeViewNodes = useMemo(() => toTreeViewNodes(tree, aggregates), [tree, aggregates]);
   const rows = useMemo(() => toTableRows(tree, aggregates), [tree, aggregates]);
