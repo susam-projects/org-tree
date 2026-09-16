@@ -11,11 +11,6 @@ export const GlobalStyle = createGlobalStyle`
 
   body {
     margin: 0;
-    min-height: 100svh;
     font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
-  }
-
-  #root {
-    min-height: 100svh;
   }
 `
