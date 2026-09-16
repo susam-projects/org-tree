@@ -11,16 +11,24 @@ import {
 interface OrgTableBodyRowProps {
   row: OrgTableRow;
   selected: boolean;
+  tabIndex: number;
+  rowRef: (element: HTMLTableRowElement | null) => void;
   onSelect: (id: string) => void;
 }
 
-export function OrgTableBodyRow({ row, selected, onSelect }: OrgTableBodyRowProps) {
+export function OrgTableBodyRow({ row, selected, tabIndex, rowRef, onSelect }: OrgTableBodyRowProps) {
   const headcountChanged = useFadeHighlight(row.headcount);
   const budgetChanged = useFadeHighlight(row.budget);
   const performanceChanged = useFadeHighlight(row.performance);
 
   return (
-    <S.BodyRow $selected={selected} onClick={() => onSelect(row.id)}>
+    <S.BodyRow
+      ref={rowRef}
+      tabIndex={tabIndex}
+      aria-selected={selected}
+      $selected={selected}
+      onClick={() => onSelect(row.id)}
+    >
       <S.NameCell $depth={row.depth}>{row.name}</S.NameCell>
       <S.Cell>{getLevelLabel(row.depth)}</S.Cell>
       <S.Cell $numeric $highlighted={headcountChanged}>

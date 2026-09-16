@@ -93,6 +93,21 @@ export const Headcount = styled.span<{ $highlighted?: boolean }>`
   }
 `;
 
+export const ChildrenWrapper = styled.div<{ $expanded: boolean }>`
+  display: grid;
+  grid-template-rows: ${({ $expanded }) => ($expanded ? '1fr' : '0fr')};
+  transition: grid-template-rows 200ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+`;
+
+export const ChildrenInner = styled.div`
+  overflow: hidden;
+  min-height: 0;
+`;
+
 export const ChildrenList = styled.ul`
   list-style: none;
   margin: 0;

@@ -1,4 +1,5 @@
-import { useId, useMemo, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import * as S from '@/orgTable/components/OrgTable/OrgTable.style';
 import { OrgTableBodyRow } from '@/orgTable/components/OrgTableBodyRow/OrgTableBodyRow';
 import type { OrgTableColumn, OrgTableRow, OrgTableSort } from '@/orgTable/types/types';
@@ -33,14 +34,50 @@ export function OrgTable({ rows, selectedId, onSelect }: OrgTableProps) {
   const [filter, setFilter] = useState('');
   const [sort, setSort] = useState<OrgTableSort | null>(null);
   const debouncedFilter = useDebouncedValue(filter, FILTER_DEBOUNCE_MS);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const rowRefs = useRef<Array<HTMLTableRowElement | null>>([]);
 
   const visibleRows = useMemo(
     () => sortRows(filterRows(rows, debouncedFilter), sort),
     [rows, debouncedFilter, sort],
   );
 
+  const clampedFocusedIndex =
+    visibleRows.length === 0 ? -1 : Math.min(focusedIndex, visibleRows.length - 1);
+
   function toggleSort(column: OrgTableColumn) {
     setSort((previous) => nextSort(previous, column));
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLTableSectionElement>) {
+    if (visibleRows.length === 0) return;
+
+    let nextIndex: number;
+    switch (event.key) {
+      case 'ArrowDown':
+        nextIndex = Math.min(clampedFocusedIndex + 1, visibleRows.length - 1);
+        break;
+      case 'ArrowUp':
+        nextIndex = Math.max(clampedFocusedIndex - 1, 0);
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = visibleRows.length - 1;
+        break;
+      case 'Enter': {
+        const row = visibleRows[clampedFocusedIndex];
+        if (row) onSelect(row.id);
+        return;
+      }
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    setFocusedIndex(nextIndex);
+    rowRefs.current[nextIndex]?.focus();
   }
 
   return (
@@ -81,12 +118,16 @@ export function OrgTable({ rows, selectedId, onSelect }: OrgTableProps) {
               ))}
             </tr>
           </thead>
-          <tbody>
-            {visibleRows.map((row) => (
+          <tbody onKeyDown={handleKeyDown}>
+            {visibleRows.map((row, index) => (
               <OrgTableBodyRow
                 key={row.id}
                 row={row}
                 selected={row.id === selectedId}
+                tabIndex={index === clampedFocusedIndex ? 0 : -1}
+                rowRef={(element) => {
+                  rowRefs.current[index] = element;
+                }}
                 onSelect={onSelect}
               />
             ))}

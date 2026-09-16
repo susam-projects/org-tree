@@ -47,19 +47,23 @@ export function OrgTreeNodeRow({
         </S.Headcount>
       </S.NodeRow>
 
-      {hasChildren && isExpanded && (
-        <S.ChildrenList>
-          {node.children.map((child) => (
-            <OrgTreeNodeRow
-              key={child.id}
-              node={child}
-              depth={depth + 1}
-              expandedIds={expandedIds}
-              selectedId={selectedId}
-              onToggle={onToggle}
-            />
-          ))}
-        </S.ChildrenList>
+      {hasChildren && (
+        <S.ChildrenWrapper $expanded={isExpanded}>
+          <S.ChildrenInner inert={isExpanded ? undefined : true}>
+            <S.ChildrenList>
+              {node.children.map((child) => (
+                <OrgTreeNodeRow
+                  key={child.id}
+                  node={child}
+                  depth={depth + 1}
+                  expandedIds={expandedIds}
+                  selectedId={selectedId}
+                  onToggle={onToggle}
+                />
+              ))}
+            </S.ChildrenList>
+          </S.ChildrenInner>
+        </S.ChildrenWrapper>
       )}
     </S.NodeItem>
   );
