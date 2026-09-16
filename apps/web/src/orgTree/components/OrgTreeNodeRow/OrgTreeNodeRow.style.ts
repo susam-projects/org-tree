@@ -1,4 +1,22 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const fadeRing = keyframes`
+  from {
+    box-shadow: 0 0 0 4px #fef08a;
+  }
+  to {
+    box-shadow: 0 0 0 0 transparent;
+  }
+`;
+
+const fadeHighlight = keyframes`
+  from {
+    background-color: #fef08a;
+  }
+  to {
+    background-color: transparent;
+  }
+`;
 
 export const NodeItem = styled.li`
   margin: 0;
@@ -43,12 +61,17 @@ export const ToggleSpacer = styled.span`
   flex-shrink: 0;
 `;
 
-export const PerformanceDot = styled.span<{ $color: string }>`
+export const PerformanceDot = styled.span<{ $color: string; $highlighted?: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
   background: ${({ $color }) => $color};
+  animation: ${({ $highlighted }) => ($highlighted ? css`${fadeRing} 1.5s ease-out` : 'none')};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 export const NodeName = styled.span`
@@ -58,10 +81,16 @@ export const NodeName = styled.span`
   white-space: nowrap;
 `;
 
-export const Headcount = styled.span`
+export const Headcount = styled.span<{ $highlighted?: boolean }>`
   flex-shrink: 0;
   color: #6b7280;
   font-size: 13px;
+  border-radius: 3px;
+  animation: ${({ $highlighted }) => ($highlighted ? css`${fadeHighlight} 1.5s ease-out` : 'none')};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 export const ChildrenList = styled.ul`

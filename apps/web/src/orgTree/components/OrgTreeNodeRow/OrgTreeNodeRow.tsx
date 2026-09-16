@@ -1,5 +1,6 @@
 import * as S from '@/orgTree/components/OrgTreeNodeRow/OrgTreeNodeRow.style';
 import type { OrgTreeViewNode } from '@/orgTree/types/types';
+import { useFadeHighlight } from '@/orgTree/hooks/useFadeHighlight';
 import { getPerformanceColor } from '@/orgTree/utils/performanceColor';
 
 interface OrgTreeNodeRowProps {
@@ -19,6 +20,8 @@ export function OrgTreeNodeRow({
 }: OrgTreeNodeRowProps) {
   const hasChildren = node.children.length > 0;
   const isExpanded = expandedIds.has(node.id);
+  const performanceChanged = useFadeHighlight(node.averagePerformance);
+  const headcountChanged = useFadeHighlight(`${node.ownHeadcount}/${node.totalHeadcount}`);
 
   return (
     <S.NodeItem>
@@ -32,9 +35,12 @@ export function OrgTreeNodeRow({
         aria-expanded={hasChildren ? isExpanded : undefined}
       >
         {hasChildren ? <S.ToggleIcon $expanded={isExpanded}>▶</S.ToggleIcon> : <S.ToggleSpacer />}
-        <S.PerformanceDot $color={getPerformanceColor(node.averagePerformance)} />
+        <S.PerformanceDot
+          $color={getPerformanceColor(node.averagePerformance)}
+          $highlighted={performanceChanged}
+        />
         <S.NodeName>{node.name}</S.NodeName>
-        <S.Headcount>
+        <S.Headcount $highlighted={headcountChanged}>
           {node.ownHeadcount === node.totalHeadcount
             ? `${node.totalHeadcount} чел.`
             : `${node.ownHeadcount} / ${node.totalHeadcount} чел.`}

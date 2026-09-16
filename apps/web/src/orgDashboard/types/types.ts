@@ -23,3 +23,20 @@ export interface OrgAggregate {
   totalBudget: number;
   averagePerformance: number;
 }
+
+export const orgNodePatchSchema = z.object({
+  id: z.string().min(1),
+  headcount: z.number().int().nonnegative().optional(),
+  budget: z.number().int().nonnegative().optional(),
+  performance: z.number().min(0).max(100).optional(),
+  updatedAt: z.iso.datetime(),
+});
+
+export const orgPatchMessageSchema = z.object({
+  type: z.literal('patch'),
+  revision: z.number().int().nonnegative(),
+  nodes: z.array(orgNodePatchSchema),
+});
+
+export type OrgNodePatch = z.infer<typeof orgNodePatchSchema>;
+export type OrgPatchMessage = z.infer<typeof orgPatchMessageSchema>;

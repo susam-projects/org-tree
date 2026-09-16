@@ -1,16 +1,11 @@
 import { useId, useMemo, useState } from 'react';
 import * as S from '@/orgTable/components/OrgTable/OrgTable.style';
+import { OrgTableBodyRow } from '@/orgTable/components/OrgTableBodyRow/OrgTableBodyRow';
 import type { OrgTableColumn, OrgTableRow, OrgTableSort } from '@/orgTable/types/types';
 import { useDebouncedValue } from '@/orgTable/hooks/useDebouncedValue';
 import { filterRows } from '@/orgTable/utils/filterRows';
 import { nextSort } from '@/orgTable/utils/nextSort';
 import { sortRows } from '@/orgTable/utils/sortRows';
-import {
-  formatBudget,
-  formatHeadcount,
-  formatPerformance,
-  getLevelLabel,
-} from '@/orgTable/utils/format';
 
 const FILTER_DEBOUNCE_MS = 250;
 
@@ -88,17 +83,12 @@ export function OrgTable({ rows, selectedId, onSelect }: OrgTableProps) {
           </thead>
           <tbody>
             {visibleRows.map((row) => (
-              <S.BodyRow
+              <OrgTableBodyRow
                 key={row.id}
-                $selected={row.id === selectedId}
-                onClick={() => onSelect(row.id)}
-              >
-                <S.NameCell $depth={row.depth}>{row.name}</S.NameCell>
-                <S.Cell>{getLevelLabel(row.depth)}</S.Cell>
-                <S.Cell $numeric>{formatHeadcount(row.headcount)}</S.Cell>
-                <S.Cell $numeric>{formatBudget(row.budget)}</S.Cell>
-                <S.Cell $numeric>{formatPerformance(row.performance)}</S.Cell>
-              </S.BodyRow>
+                row={row}
+                selected={row.id === selectedId}
+                onSelect={onSelect}
+              />
             ))}
           </tbody>
         </S.Table>

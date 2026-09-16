@@ -5,8 +5,10 @@ import type { CachedResource } from '@/cache';
 import { orgNodesSchema } from '@/orgDashboard/types/types';
 import type { OrgNode } from '@/orgDashboard/types/types';
 
+export const orgTreeQueryKey = ['org-tree'];
+
 const orgTreeResource: CachedResource<OrgNode[]> = {
-  key: ['org-tree'],
+  key: orgTreeQueryKey,
   url: '/api/org-tree',
   parse: (json) => {
     const result = orgNodesSchema.safeParse(json);

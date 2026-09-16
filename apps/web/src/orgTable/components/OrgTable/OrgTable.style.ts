@@ -1,4 +1,13 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const fadeHighlight = keyframes`
+  from {
+    background-color: #fef08a;
+  }
+  to {
+    background-color: transparent;
+  }
+`;
 
 export const FilterRow = styled.div`
   display: flex;
@@ -95,11 +104,16 @@ export const BodyRow = styled.tr<{ $selected: boolean }>`
   }
 `;
 
-export const Cell = styled.td<{ $numeric?: boolean }>`
+export const Cell = styled.td<{ $numeric?: boolean; $highlighted?: boolean }>`
   padding: 6px 8px;
   border-bottom: 1px solid #f3f4f6;
   text-align: ${({ $numeric }) => ($numeric ? 'right' : 'left')};
   font-variant-numeric: ${({ $numeric }) => ($numeric ? 'tabular-nums' : 'normal')};
+  animation: ${({ $highlighted }) => ($highlighted ? css`${fadeHighlight} 1.5s ease-out` : 'none')};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 export const NameCell = styled(Cell)<{ $depth: number }>`
