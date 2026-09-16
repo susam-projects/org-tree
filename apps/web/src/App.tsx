@@ -1,6 +1,6 @@
-import styled from 'styled-components'
-import { GlobalStyle } from '@/global.style'
-import { OrgTree } from '@/orgTree/components/OrgTree/OrgTree'
+import styled from 'styled-components';
+import { GlobalStyle } from '@/global.style';
+import { OrgTree } from '@/orgTree/components/OrgTree/OrgTree';
 
 const Screen = styled.main`
   display: flex;
@@ -10,18 +10,18 @@ const Screen = styled.main`
   gap: 12px;
   text-align: center;
   padding: 32px 16px;
-`
+`;
 
 const Title = styled.h1`
   margin: 0;
   font-size: 28px;
   font-weight: 600;
-`
+`;
 
 const Subtitle = styled.p`
   margin: 0 0 12px;
   color: #6b7280;
-`
+`;
 
 function App() {
   return (
@@ -33,7 +33,7 @@ function App() {
         <OrgTree />
       </Screen>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

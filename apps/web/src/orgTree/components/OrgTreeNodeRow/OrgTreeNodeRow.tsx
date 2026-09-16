@@ -1,17 +1,17 @@
-import * as S from '@/orgTree/components/OrgTreeNodeRow/OrgTreeNodeRow.style'
-import type { OrgTreeNode } from '@/orgTree/types/types'
-import { getPerformanceColor } from '@/orgTree/utils/performanceColor'
+import * as S from '@/orgTree/components/OrgTreeNodeRow/OrgTreeNodeRow.style';
+import type { OrgTreeNode } from '@/orgTree/types/types';
+import { getPerformanceColor } from '@/orgTree/utils/performanceColor';
 
 interface OrgTreeNodeRowProps {
-  node: OrgTreeNode
-  depth: number
-  expandedIds: Set<string>
-  onToggle: (id: string) => void
+  node: OrgTreeNode;
+  depth: number;
+  expandedIds: Set<string>;
+  onToggle: (id: string) => void;
 }
 
 export function OrgTreeNodeRow({ node, depth, expandedIds, onToggle }: OrgTreeNodeRowProps) {
-  const hasChildren = node.children.length > 0
-  const isExpanded = expandedIds.has(node.id)
+  const hasChildren = node.children.length > 0;
+  const isExpanded = expandedIds.has(node.id);
 
   return (
     <S.NodeItem>
@@ -43,5 +43,5 @@ export function OrgTreeNodeRow({ node, depth, expandedIds, onToggle }: OrgTreeNo
         </S.ChildrenList>
       )}
     </S.NodeItem>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
   :root {
@@ -13,4 +13,4 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
   }
-`
+`;
