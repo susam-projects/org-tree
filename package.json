@@ -17,6 +17,7 @@
     "build": "npm run build -w @orgtree/api && npm run build -w @orgtree/web",
     "start": "npm run start -w @orgtree/api",
     "lint": "npm run lint -w @orgtree/web",
+    "test": "npm run test -w @orgtree/web",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

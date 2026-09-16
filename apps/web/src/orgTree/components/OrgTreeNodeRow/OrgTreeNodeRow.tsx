@@ -24,9 +24,13 @@ export function OrgTreeNodeRow({ node, depth, expandedIds, onToggle }: OrgTreeNo
         aria-expanded={hasChildren ? isExpanded : undefined}
       >
         {hasChildren ? <S.ToggleIcon $expanded={isExpanded}>▶</S.ToggleIcon> : <S.ToggleSpacer />}
-        <S.PerformanceDot $color={getPerformanceColor(node.performance)} />
+        <S.PerformanceDot $color={getPerformanceColor(node.averagePerformance)} />
         <S.NodeName>{node.name}</S.NodeName>
-        <S.Headcount>{node.headcount} чел.</S.Headcount>
+        <S.Headcount>
+          {node.ownHeadcount === node.totalHeadcount
+            ? `${node.totalHeadcount} чел.`
+            : `${node.ownHeadcount} / ${node.totalHeadcount} чел.`}
+        </S.Headcount>
       </S.NodeRow>
 
       {hasChildren && isExpanded && (

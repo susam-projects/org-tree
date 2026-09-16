@@ -17,3 +17,9 @@ export type OrgNode = z.infer<typeof orgNodeSchema>;
 export interface OrgTreeNode extends OrgNode {
   children: OrgTreeNode[];
 }
+
+export interface OrgAggregate {
+  totalHeadcount: number;
+  totalBudget: number;
+  averagePerformance: number;
+}

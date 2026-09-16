@@ -1,7 +1,8 @@
 export interface OrgTreeViewNode {
   id: string;
   name: string;
-  headcount: number;
-  performance: number;
+  ownHeadcount: number;
+  totalHeadcount: number;
+  averagePerformance: number;
   children: OrgTreeViewNode[];
 }

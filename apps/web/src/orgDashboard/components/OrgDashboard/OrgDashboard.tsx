@@ -3,6 +3,7 @@ import * as S from '@/orgDashboard/components/OrgDashboard/OrgDashboard.style';
 import { OrgTable } from '@/orgTable';
 import { OrgTree } from '@/orgTree';
 import { useOrgTreeData } from '@/orgDashboard/api/useOrgTreeData';
+import { aggregateOrgTree } from '@/orgDashboard/utils/aggregate';
 import { buildOrgTree } from '@/orgDashboard/utils/buildTree';
 import { toTableRows } from '@/orgDashboard/utils/toTableRows';
 import { toTreeViewNodes } from '@/orgDashboard/utils/toTreeViewNodes';
@@ -15,8 +16,9 @@ export function OrgDashboard() {
   const [filter, setFilter] = useState('');
 
   const tree = useMemo(() => (state.status === 'success' ? buildOrgTree(state.data) : []), [state]);
-  const treeViewNodes = useMemo(() => toTreeViewNodes(tree), [tree]);
-  const rows = useMemo(() => toTableRows(tree), [tree]);
+  const aggregates = useMemo(() => aggregateOrgTree(tree), [tree]);
+  const treeViewNodes = useMemo(() => toTreeViewNodes(tree, aggregates), [tree, aggregates]);
+  const rows = useMemo(() => toTableRows(tree, aggregates), [tree, aggregates]);
 
   if (state.status === 'loading') {
     return <S.StatusMessage>Загрузка…</S.StatusMessage>;
