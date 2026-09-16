@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { conditionalGet } from '@/cache/conditionalGet';
 import type { CacheState, CachedResource } from '@/cache/types';
@@ -14,7 +15,9 @@ export function useCachedResource<T>(resource: CachedResource<T>): CacheState<T>
       }),
   });
 
-  if (query.isPending) return { status: 'loading' };
-  if (query.isError) return { status: 'error', message: query.error.message };
-  return { status: 'success', data: query.data };
+  return useMemo<CacheState<T>>(() => {
+    if (query.isPending) return { status: 'loading' };
+    if (query.isError) return { status: 'error', message: query.error.message };
+    return { status: 'success', data: query.data };
+  }, [query.isPending, query.isError, query.error, query.data]);
 }

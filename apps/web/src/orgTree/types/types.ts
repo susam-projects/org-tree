@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 export const orgNodeSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  parentId: z.string().nullable(),
-  headcount: z.number(),
-  budget: z.number(),
+  id: z.string().min(1),
+  name: z.string().min(1),
+  parentId: z.string().min(1).nullable(),
+  headcount: z.number().int().nonnegative(),
+  budget: z.number().int().nonnegative(),
   performance: z.number().min(0).max(100),
-  updatedAt: z.string(),
+  updatedAt: z.iso.datetime(),
 });
 
 export const orgNodesSchema = z.array(orgNodeSchema);
