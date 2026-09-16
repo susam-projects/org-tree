@@ -13,7 +13,6 @@ type ViewMode = 'tree' | 'table';
 export function OrgDashboard() {
   const state = useOrgTreeData();
   const [view, setView] = useState<ViewMode>('tree');
-  const [filter, setFilter] = useState('');
 
   const tree = useMemo(() => (state.status === 'success' ? buildOrgTree(state.data) : []), [state]);
   const aggregates = useMemo(() => aggregateOrgTree(tree), [tree]);
@@ -61,7 +60,7 @@ export function OrgDashboard() {
 
         <S.TablePanel $visible={view === 'table'} aria-labelledby="org-table-title">
           <S.PanelTitle id="org-table-title">Таблица</S.PanelTitle>
-          <OrgTable rows={rows} filter={filter} onFilterChange={setFilter} />
+          <OrgTable rows={rows} />
         </S.TablePanel>
       </S.Layout>
     </>

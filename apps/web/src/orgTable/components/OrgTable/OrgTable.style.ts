@@ -39,11 +39,50 @@ export const Table = styled.table`
 `;
 
 export const HeadCell = styled.th<{ $numeric?: boolean }>`
-  padding: 8px;
+  padding: 0;
   border-bottom: 1px solid #d1d5db;
   font-weight: 600;
   text-align: ${({ $numeric }) => ($numeric ? 'right' : 'left')};
   vertical-align: bottom;
+`;
+
+export const SortButton = styled.button<{ $numeric?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: ${({ $numeric }) => ($numeric ? 'flex-end' : 'flex-start')};
+  gap: 4px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  white-space: inherit;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+`;
+
+export const SortMarker = styled.span`
+  display: inline-block;
+  width: 10px;
+  flex-shrink: 0;
+  font-size: 9px;
+  color: #6b7280;
+`;
+
+export const EmptyMessage = styled.p`
+  margin: 12px 0 0;
+  color: #6b7280;
 `;
 
 export const BodyRow = styled.tr`

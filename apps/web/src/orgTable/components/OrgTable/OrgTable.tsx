@@ -1,6 +1,10 @@
-import { useId } from 'react';
+import { useId, useMemo, useState } from 'react';
 import * as S from '@/orgTable/components/OrgTable/OrgTable.style';
-import type { OrgTableRow } from '@/orgTable/types/types';
+import type { OrgTableColumn, OrgTableRow, OrgTableSort } from '@/orgTable/types/types';
+import { useDebouncedValue } from '@/orgTable/hooks/useDebouncedValue';
+import { filterRows } from '@/orgTable/utils/filterRows';
+import { nextSort } from '@/orgTable/utils/nextSort';
+import { sortRows } from '@/orgTable/utils/sortRows';
 import {
   formatBudget,
   formatHeadcount,
@@ -8,14 +12,39 @@ import {
   getLevelLabel,
 } from '@/orgTable/utils/format';
 
+const FILTER_DEBOUNCE_MS = 250;
+
+const columns: { key: OrgTableColumn; title: string; numeric: boolean }[] = [
+  { key: 'name', title: 'Подразделение', numeric: false },
+  { key: 'depth', title: 'Уровень', numeric: false },
+  { key: 'headcount', title: 'Всего сотрудников', numeric: true },
+  { key: 'budget', title: 'Бюджет суммарный', numeric: true },
+  { key: 'performance', title: 'Средняя эффективность', numeric: true },
+];
+
+const ariaSort = {
+  asc: 'ascending',
+  desc: 'descending',
+} as const;
+
 interface OrgTableProps {
   rows: OrgTableRow[];
-  filter: string;
-  onFilterChange: (filter: string) => void;
 }
 
-export function OrgTable({ rows, filter, onFilterChange }: OrgTableProps) {
+export function OrgTable({ rows }: OrgTableProps) {
   const filterId = useId();
+  const [filter, setFilter] = useState('');
+  const [sort, setSort] = useState<OrgTableSort | null>(null);
+  const debouncedFilter = useDebouncedValue(filter, FILTER_DEBOUNCE_MS);
+
+  const visibleRows = useMemo(
+    () => sortRows(filterRows(rows, debouncedFilter), sort),
+    [rows, debouncedFilter, sort],
+  );
+
+  function toggleSort(column: OrgTableColumn) {
+    setSort((previous) => nextSort(previous, column));
+  }
 
   return (
     <>
@@ -26,7 +55,7 @@ export function OrgTable({ rows, filter, onFilterChange }: OrgTableProps) {
           type="search"
           value={filter}
           placeholder="Например, Платформа"
-          onChange={(event) => onFilterChange(event.target.value)}
+          onChange={(event) => setFilter(event.target.value)}
         />
       </S.FilterRow>
 
@@ -34,21 +63,29 @@ export function OrgTable({ rows, filter, onFilterChange }: OrgTableProps) {
         <S.Table>
           <thead>
             <tr>
-              <S.HeadCell scope="col">Подразделение</S.HeadCell>
-              <S.HeadCell scope="col">Уровень</S.HeadCell>
-              <S.HeadCell scope="col" $numeric>
-                Всего сотрудников
-              </S.HeadCell>
-              <S.HeadCell scope="col" $numeric>
-                Бюджет суммарный
-              </S.HeadCell>
-              <S.HeadCell scope="col" $numeric>
-                Средняя эффективность
-              </S.HeadCell>
+              {columns.map((column) => (
+                <S.HeadCell
+                  key={column.key}
+                  scope="col"
+                  $numeric={column.numeric}
+                  aria-sort={sort?.column === column.key ? ariaSort[sort.direction] : 'none'}
+                >
+                  <S.SortButton
+                    type="button"
+                    $numeric={column.numeric}
+                    onClick={() => toggleSort(column.key)}
+                  >
+                    {column.title}
+                    <S.SortMarker aria-hidden="true">
+                      {sort?.column === column.key ? (sort.direction === 'asc' ? '▲' : '▼') : ''}
+                    </S.SortMarker>
+                  </S.SortButton>
+                </S.HeadCell>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
+            {visibleRows.map((row) => (
               <S.BodyRow key={row.id}>
                 <S.NameCell $depth={row.depth}>{row.name}</S.NameCell>
                 <S.Cell>{getLevelLabel(row.depth)}</S.Cell>
@@ -60,6 +97,8 @@ export function OrgTable({ rows, filter, onFilterChange }: OrgTableProps) {
           </tbody>
         </S.Table>
       </S.TableScroll>
+
+      {visibleRows.length === 0 && <S.EmptyMessage>Ничего не найдено</S.EmptyMessage>}
     </>
   );
 }
