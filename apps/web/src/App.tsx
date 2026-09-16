@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '@/global.style';
-import { OrgTree } from '@/orgTree/components/OrgTree/OrgTree';
+import { OrgDashboard } from '@/orgDashboard';
 
 const Screen = styled.main`
   display: flex;
@@ -30,7 +30,7 @@ function App() {
       <Screen>
         <Title>Org Tree</Title>
         <Subtitle>Дашборд мониторинга орг-структуры компании</Subtitle>
-        <OrgTree />
+        <OrgDashboard />
       </Screen>
     </>
   );

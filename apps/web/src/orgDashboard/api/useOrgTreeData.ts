@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { z } from 'zod';
 import { useCachedResource } from '@/cache';
 import type { CachedResource } from '@/cache';
-import { orgNodesSchema } from '@/orgTree/types/types';
-import type { OrgNode } from '@/orgTree/types/types';
+import { orgNodesSchema } from '@/orgDashboard/types/types';
+import type { OrgNode } from '@/orgDashboard/types/types';
 
 const orgTreeResource: CachedResource<OrgNode[]> = {
   key: ['org-tree'],

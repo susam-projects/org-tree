@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { OrgTreeNodeRow } from '@/orgTree/components/OrgTreeNodeRow/OrgTreeNodeRow';
 import * as S from '@/orgTree/components/OrgTree/OrgTree.style';
-import type { OrgTreeNode } from '@/orgTree/types/types';
-import { useOrgTreeData } from '@/orgTree/api/useOrgTreeData';
-import { buildOrgTree } from '@/orgTree/utils/buildTree';
+import type { OrgTreeViewNode } from '@/orgTree/types/types';
 
-function getDefaultExpandedIds(tree: OrgTreeNode[]): Set<string> {
+function getDefaultExpandedIds(tree: OrgTreeViewNode[]): Set<string> {
   const ids = new Set<string>();
   for (const node of tree) {
     if (node.children.length > 0) ids.add(node.id);
@@ -13,11 +11,11 @@ function getDefaultExpandedIds(tree: OrgTreeNode[]): Set<string> {
   return ids;
 }
 
-export function OrgTree() {
-  const state = useOrgTreeData();
+interface OrgTreeProps {
+  tree: OrgTreeViewNode[];
+}
 
-  const tree = useMemo(() => (state.status === 'success' ? buildOrgTree(state.data) : []), [state]);
-
+export function OrgTree({ tree }: OrgTreeProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string> | null>(null);
 
   useEffect(() => {
@@ -33,18 +31,6 @@ export function OrgTree() {
       else next.add(id);
       return next;
     });
-  }
-
-  if (state.status === 'loading') {
-    return <S.StatusMessage>Загрузка…</S.StatusMessage>;
-  }
-
-  if (state.status === 'error') {
-    return <S.StatusMessage role="alert">{state.message}</S.StatusMessage>;
-  }
-
-  if (state.status === 'empty') {
-    return <S.StatusMessage>Нет данных для отображения</S.StatusMessage>;
   }
 
   return (

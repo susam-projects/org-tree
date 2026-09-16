@@ -1,4 +1,4 @@
-import type { OrgNode, OrgTreeNode } from '@/orgTree/types/types';
+import type { OrgNode, OrgTreeNode } from '@/orgDashboard/types/types';
 
 export function buildOrgTree(nodes: OrgNode[]): OrgTreeNode[] {
   const byId = new Map<string, OrgTreeNode>();

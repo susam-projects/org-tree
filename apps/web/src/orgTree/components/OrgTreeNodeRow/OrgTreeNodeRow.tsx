@@ -1,9 +1,9 @@
 import * as S from '@/orgTree/components/OrgTreeNodeRow/OrgTreeNodeRow.style';
-import type { OrgTreeNode } from '@/orgTree/types/types';
+import type { OrgTreeViewNode } from '@/orgTree/types/types';
 import { getPerformanceColor } from '@/orgTree/utils/performanceColor';
 
 interface OrgTreeNodeRowProps {
-  node: OrgTreeNode;
+  node: OrgTreeViewNode;
   depth: number;
   expandedIds: Set<string>;
   onToggle: (id: string) => void;
