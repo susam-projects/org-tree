@@ -5,10 +5,16 @@ import { orgNodes } from './orgTree.js';
 type Options = {
   logger?: boolean;
   corsOrigins?: string[];
+  responseDelayMs?: number;
 };
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export async function buildApp(options: Options = {}) {
   const app = Fastify({ logger: options.logger ?? false });
+  const responseDelayMs = options.responseDelayMs ?? 800;
 
   await app.register(cors, {
     origin(origin, callback) {
@@ -22,7 +28,10 @@ export async function buildApp(options: Options = {}) {
     methods: ['GET', 'HEAD', 'OPTIONS'],
   });
 
-  app.get('/api/org-tree', async () => orgNodes);
+  app.get('/api/org-tree', async () => {
+    await delay(responseDelayMs);
+    return orgNodes;
+  });
 
   await app.ready();
   return app;
