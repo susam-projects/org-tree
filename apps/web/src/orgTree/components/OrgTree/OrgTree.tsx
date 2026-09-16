@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { OrgTreeNodeRow } from '@/orgTree/components/OrgTreeNodeRow/OrgTreeNodeRow';
 import * as S from '@/orgTree/components/OrgTree/OrgTree.style';
 import type { OrgTreeNode } from '@/orgTree/types/types';
-import { useOrgTreeData } from '@/orgTree/hooks/useOrgTreeData';
+import { useOrgTreeData } from '@/orgTree/api/useOrgTreeData';
 import { buildOrgTree } from '@/orgTree/utils/buildTree';
 
 function getDefaultExpandedIds(tree: OrgTreeNode[]): Set<string> {

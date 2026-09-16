@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import etag from '@fastify/etag';
 import { orgNodes } from './orgTree.js';
 
 type Options = {
@@ -26,7 +27,11 @@ export async function buildApp(options: Options = {}) {
       );
     },
     methods: ['GET', 'HEAD', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'If-None-Match'],
+    exposedHeaders: ['ETag'],
   });
+
+  await app.register(etag);
 
   app.get('/api/org-tree', async () => {
     await delay(responseDelayMs);
