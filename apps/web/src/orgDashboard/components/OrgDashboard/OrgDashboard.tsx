@@ -13,6 +13,7 @@ type ViewMode = 'tree' | 'table';
 export function OrgDashboard() {
   const state = useOrgTreeData();
   const [view, setView] = useState<ViewMode>('tree');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const tree = useMemo(() => (state.status === 'success' ? buildOrgTree(state.data) : []), [state]);
   const aggregates = useMemo(() => aggregateOrgTree(tree), [tree]);
@@ -55,12 +56,12 @@ export function OrgDashboard() {
       <S.Layout>
         <S.TreePanel $visible={view === 'tree'} aria-labelledby="org-tree-title">
           <S.PanelTitle id="org-tree-title">Дерево</S.PanelTitle>
-          <OrgTree tree={treeViewNodes} />
+          <OrgTree tree={treeViewNodes} selectedId={selectedId} />
         </S.TreePanel>
 
         <S.TablePanel $visible={view === 'table'} aria-labelledby="org-table-title">
           <S.PanelTitle id="org-table-title">Таблица</S.PanelTitle>
-          <OrgTable rows={rows} />
+          <OrgTable rows={rows} selectedId={selectedId} onSelect={setSelectedId} />
         </S.TablePanel>
       </S.Layout>
     </>

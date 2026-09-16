@@ -5,22 +5,25 @@ export const NodeItem = styled.li`
   padding: 0;
 `;
 
-export const NodeRow = styled.div<{ $depth: number; $clickable: boolean }>`
+export const NodeRow = styled.div<{ $depth: number; $clickable: boolean; $selected: boolean }>`
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
   padding: 6px 8px 6px ${({ $depth }) => 8 + $depth * 20}px;
   border: none;
-  background: transparent;
+  background: ${({ $selected }) => ($selected ? '#dbeafe' : 'transparent')};
+  box-shadow: ${({ $selected }) => ($selected ? 'inset 2px 0 0 #2563eb' : 'none')};
   font: inherit;
+  font-weight: ${({ $selected }) => ($selected ? 600 : 'inherit')};
   text-align: left;
   color: inherit;
   border-radius: 4px;
   cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
 
   &:hover {
-    background: ${({ $clickable }) => ($clickable ? '#f3f4f6' : 'transparent')};
+    background: ${({ $clickable, $selected }) =>
+      $selected ? '#dbeafe' : $clickable ? '#f3f4f6' : 'transparent'};
   }
 `;
 

@@ -85,9 +85,13 @@ export const EmptyMessage = styled.p`
   color: #6b7280;
 `;
 
-export const BodyRow = styled.tr`
+export const BodyRow = styled.tr<{ $selected: boolean }>`
+  cursor: pointer;
+  background: ${({ $selected }) => ($selected ? '#dbeafe' : 'transparent')};
+  font-weight: ${({ $selected }) => ($selected ? 600 : 'inherit')};
+
   &:hover {
-    background: #f9fafb;
+    background: ${({ $selected }) => ($selected ? '#dbeafe' : '#f9fafb')};
   }
 `;
 

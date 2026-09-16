@@ -29,9 +29,11 @@ const ariaSort = {
 
 interface OrgTableProps {
   rows: OrgTableRow[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
 }
 
-export function OrgTable({ rows }: OrgTableProps) {
+export function OrgTable({ rows, selectedId, onSelect }: OrgTableProps) {
   const filterId = useId();
   const [filter, setFilter] = useState('');
   const [sort, setSort] = useState<OrgTableSort | null>(null);
@@ -86,7 +88,11 @@ export function OrgTable({ rows }: OrgTableProps) {
           </thead>
           <tbody>
             {visibleRows.map((row) => (
-              <S.BodyRow key={row.id}>
+              <S.BodyRow
+                key={row.id}
+                $selected={row.id === selectedId}
+                onClick={() => onSelect(row.id)}
+              >
                 <S.NameCell $depth={row.depth}>{row.name}</S.NameCell>
                 <S.Cell>{getLevelLabel(row.depth)}</S.Cell>
                 <S.Cell $numeric>{formatHeadcount(row.headcount)}</S.Cell>

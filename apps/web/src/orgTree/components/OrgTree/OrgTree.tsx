@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { OrgTreeNodeRow } from '@/orgTree/components/OrgTreeNodeRow/OrgTreeNodeRow';
 import * as S from '@/orgTree/components/OrgTree/OrgTree.style';
 import type { OrgTreeViewNode } from '@/orgTree/types/types';
+import { findAncestorIds } from '@/orgTree/utils/findAncestorIds';
 
 function getDefaultExpandedIds(tree: OrgTreeViewNode[]): Set<string> {
   const ids = new Set<string>();
@@ -13,9 +14,10 @@ function getDefaultExpandedIds(tree: OrgTreeViewNode[]): Set<string> {
 
 interface OrgTreeProps {
   tree: OrgTreeViewNode[];
+  selectedId: string | null;
 }
 
-export function OrgTree({ tree }: OrgTreeProps) {
+export function OrgTree({ tree, selectedId }: OrgTreeProps) {
   const [expandedIds, setExpandedIds] = useState<Set<string> | null>(null);
 
   useEffect(() => {
@@ -23,6 +25,16 @@ export function OrgTree({ tree }: OrgTreeProps) {
       setExpandedIds(getDefaultExpandedIds(tree));
     }
   }, [tree, expandedIds]);
+
+  const visibleExpandedIds = useMemo(() => {
+    const base = expandedIds ?? new Set<string>();
+    if (selectedId === null) return base;
+
+    const ancestors = findAncestorIds(tree, selectedId);
+    if (ancestors === null || ancestors.every((id) => base.has(id))) return base;
+
+    return new Set([...base, ...ancestors]);
+  }, [expandedIds, selectedId, tree]);
 
   function toggleNode(id: string) {
     setExpandedIds((prev) => {
@@ -40,7 +52,8 @@ export function OrgTree({ tree }: OrgTreeProps) {
           key={node.id}
           node={node}
           depth={0}
-          expandedIds={expandedIds ?? new Set()}
+          expandedIds={visibleExpandedIds}
+          selectedId={selectedId}
           onToggle={toggleNode}
         />
       ))}

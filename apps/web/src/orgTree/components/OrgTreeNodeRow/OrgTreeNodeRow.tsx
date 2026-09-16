@@ -6,10 +6,17 @@ interface OrgTreeNodeRowProps {
   node: OrgTreeViewNode;
   depth: number;
   expandedIds: Set<string>;
+  selectedId: string | null;
   onToggle: (id: string) => void;
 }
 
-export function OrgTreeNodeRow({ node, depth, expandedIds, onToggle }: OrgTreeNodeRowProps) {
+export function OrgTreeNodeRow({
+  node,
+  depth,
+  expandedIds,
+  selectedId,
+  onToggle,
+}: OrgTreeNodeRowProps) {
   const hasChildren = node.children.length > 0;
   const isExpanded = expandedIds.has(node.id);
 
@@ -20,6 +27,7 @@ export function OrgTreeNodeRow({ node, depth, expandedIds, onToggle }: OrgTreeNo
         type={hasChildren ? 'button' : undefined}
         $depth={depth}
         $clickable={hasChildren}
+        $selected={node.id === selectedId}
         onClick={hasChildren ? () => onToggle(node.id) : undefined}
         aria-expanded={hasChildren ? isExpanded : undefined}
       >
@@ -41,6 +49,7 @@ export function OrgTreeNodeRow({ node, depth, expandedIds, onToggle }: OrgTreeNo
               node={child}
               depth={depth + 1}
               expandedIds={expandedIds}
+              selectedId={selectedId}
               onToggle={onToggle}
             />
           ))}
